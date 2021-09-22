@@ -1,0 +1,71 @@
+#!/usr/bin/python3
+gff_file = open('/home/hemiptero/genomics/brachionusArticulo/Brachionus_mexicanus.gff', 'r').readlines()
+snp_file = open('/home/hemiptero/genomics/brachionusArticulo/snpEff/vcf/snpsOutliers.txt', 'r')
+
+# Prerpsossesnig clean gff
+nline_clean_gff = 0
+f = open('/home/hemiptero/genomics/brachionusArticulo/cleangff.txt', 'w')
+nline = 0
+for line in gff_file:
+    nline += 1
+for i in range(0, nline):
+    if not gff_file[i].find('#') != -1 and gff_file[i].find('AUGUSTUS\tgene') != -1:
+        # linea_gff = str(gff_file[i].split('\t')[0]+'\t'+
+#         gff_file[i].split('\t')[3]+'\t'
+#         +gff_file[i].split('\t')[4]+'\t'
+#         +gff_file[i].split('\t')[8])
+        linea_gff = gff_file[i]
+        f.write(linea_gff)
+        nline_clean_gff += 1
+    i = i + 1
+clean_gff = open('/home/hemiptero/genomics/brachionusArticulo/2cleangff.txt', 'r').readlines()
+# Main
+
+i = 0
+scaffold = []
+pos = []
+for line in snp_file:
+    scaffold.append(line.split()[0])
+    pos.append(int(line.split()[1]))
+
+    i = i+1
+nnsps = len(pos)
+
+numbers = []
+
+
+# for line in clean_gff:
+#     nline_clean_gff += 1
+
+
+i = 0
+h = 0
+
+found = False
+print(nline_clean_gff)
+MaxGeneRange = int(clean_gff[0].split()[4])
+scaffName = clean_gff[0].split()[0]
+print(pos[i],MaxGeneRange)
+flag = False
+while h < 17039:
+    if flag is True:
+        i = i+1
+        flag = False
+    if found is False:
+        MinGeneRange = int(clean_gff[h].split()[3])
+        MaxGeneRange = int(clean_gff[h].split()[4])
+        scaffName = clean_gff[h].split()[0]
+        gene = clean_gff[h]
+        if h < nline_clean_gff:
+            h = h+1
+    else:
+        found = False
+    if pos[i] >= MinGeneRange and pos[i] <= MaxGeneRange and scaffold[i] == scaffName:
+        print(i,h,MinGeneRange, pos[i], MaxGeneRange, gene, end='')
+        found = True
+        i = i+1
+        h = h+1
+        #print(i, h, pos[i])
+    if pos[i] > MaxGeneRange and scaffold[i] == scaffName:
+        flag = True
+print(i,h,MinGeneRange, pos[i], MaxGeneRange)

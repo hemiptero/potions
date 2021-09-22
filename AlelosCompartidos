@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+#Read file
+file = open('/home/hemiptero/genomics/venn/sample2.txt', 'r').readlines()
+nline = 0
+Geno1 = ["A","T"]
+Geno2 = ["C","A"]
+Nucleotidos = ["A","G","C","T"]
+array1 = [0 for x in range(7)]
+for line in file:
+    nline += 1
+    comparation = 0
+    for i in range(1,8,2):
+        for j in range(1,8,2):
+            if i < j:
+                Geno1[0] = line.split('\t')[i]
+                Geno1[1] = line.split('\t')[i+1]
+                Geno2[0] = line.split()[j]
+                Geno2[1] = line.split('\t')[j+1].split('\n')[0]
+#                 print(Geno1,Geno2)
+#Load alleles Geno1
+                Alleles1 = [False  for x in range(4)]
+                Alleles2 =  [False  for x in range(4)]
+                jx = 0
+                for Nucl in Nucleotidos:
+                        if Nucl in Geno1: #OR
+                            Alleles1[jx] = True
+                        jx += 1
+#Load alleles Geno2
+                jx = 0
+                for Nucl in Nucleotidos:
+                        if Nucl in Geno2: #OR
+                            Alleles2[jx] = True
+                        jx += 1
+#                 print(Alleles1)
+#                 print(Alleles2)
+#Compare
+                ShareAllele = 0
+                row = ''
+                for ix in range(4):
+                    if Alleles1[ix] and Alleles2[ix] == True: #AND
+                        ShareAllele += 1
+                comparation += 1
+                array1[comparation] = ShareAllele
+    print(nline, ',', array1,end = '\n')

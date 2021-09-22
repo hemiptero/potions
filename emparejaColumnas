@@ -1,0 +1,43 @@
+file = open('/home/hemiptero/genomics/venn/bayescan/tablaoutliers.txt', 'r').readlines()
+nline = 0
+#array1 = [0 for x in range(7)]
+countlines = 0
+#outliercount = 0
+ncols = 8
+allOutliers = []
+matrizFinal = []
+#n = 1
+
+for line in file:
+    if countlines >= 1:
+        allOutliers.append(line.split('\t')[0])
+    countlines += 1
+
+
+
+for n in range(1,ncols):
+    pairedOutliers = []
+    countlines = 0
+    for line in file:
+        if  line.split('\t')[n].split('\n')[0] != "NA":
+            pairedOutliers.append(line.split('\t')[n].split('\n')[0])
+        countlines += 1
+        
+    for i in range(len(allOutliers)):
+        if allOutliers[i] in pairedOutliers:
+            print('1')
+        else:
+            print('0')
+    print('\n')
+# print(len(matrizFinal))
+# j = 0
+
+# for i in range(len(matrizFinal)+len(allOutliers)):
+#     if i == 0:
+#         print(allOutliers[1], end = '\t')
+#     elif i % (ncols-1) != 0:
+#         print(matrizFinal[i], end = '\t')
+#     elif i % (ncols-1) == 0: 
+#         print(matrizFinal[i], end = '\n')
+#         print(allOutliers[j], end = '\t')
+#         j += 1

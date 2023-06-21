@@ -1,0 +1,47 @@
+#!/usr/bin/python3
+
+#Este script toma como entrada un archivo en formato phylyp de Tassel (que sale en formato corrupto) y lo convierte en fasta
+
+import sys
+import re
+
+def read_input_file(filename):
+    with open(filename, 'r') as file:
+        lines = file.readlines()
+
+    header = None
+    sequences = {}
+    sequence_id_pattern = re.compile(r'^[A-Za-z0-9]+\.\d+')
+
+    for line in lines:
+        line = line.strip()
+
+        if not line:
+            continue
+
+        if sequence_id_pattern.match(line):
+            header = line.split()[0]
+            sequences[header] = ""
+        elif header:  # This will avoid concatenating lines without a proper header
+            sequences[header] += line.replace(" ", "")
+
+    return sequences
+
+
+def write_fasta(sequences):
+    for header, sequence in sequences.items():
+        print(f'>{header}')
+
+        for i in range(0, len(sequence), 80):
+            print(sequence[i: i + 80])
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Usage: python convert_to_fasta.py <input_filename>")
+        sys.exit(1)
+
+    input_filename = sys.argv[1]
+
+    sequences = read_input_file(input_filename)
+    write_fasta(sequences)

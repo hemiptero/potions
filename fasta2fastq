@@ -1,0 +1,17 @@
+#!/usr/bin/python3
+# Este script convierte un archivo en formato FASTA a formato FASTQ, reemplazando el símbolo ">" por "@" en las líneas de encabezado y añadiendo información de calidad ficticia ("!") para cada base.
+import sys
+
+nombre_archivo = sys.argv[1]
+inicio = ''
+fin = ''
+
+with open(nombre_archivo, 'r') as archivo:
+    for linea in archivo:
+        if linea.startswith('>'):
+            print(linea.replace('>',"@"),end='')
+        else:
+            seqlen = len(linea)
+            print(linea,end='')
+            print('+')
+            print('!'*seqlen,'\n',end='')
